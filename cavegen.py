@@ -8,7 +8,6 @@ FLOOR = 0
 def generateGrid(r, n, T, M):
     rowCount, columnCount = 50, 50
     grid = [[0 for i in range(50)] for i in range(50)]
-    print(len(grid[0]))
     generateRandomRocks(grid, rowCount, columnCount, r)
 
     while n > 0:
@@ -19,7 +18,7 @@ def generateGrid(r, n, T, M):
                 ):
                     grid[row][col] = ROCK
         n -= 1
-    print_grid(grid)
+    #print_grid(grid)
     rockToWall(grid, rowCount, columnCount)
     return grid
 
@@ -37,21 +36,26 @@ def rockToWall(grid, rowDim, colDim):
 
 def checkNeighborHood(grid, row, col, M):
     nh = []
-    for x, y in (
-        (row - 1, col),
-        (row + 1, col),
-        (row, col - 1),
-        (row, col + 1),
-        (row - 1, col - 1),
-        (row - 1, col + 1),
-        (row + 1, col - 1),
-        (row + 1, col + 1),
-    ):
+    for x, y in moore_neighborhood(row, col, M):
         if not (0 <= x < len(grid) and 0 <= y < len(grid[x])):
             # out of bounds
             continue
         nh.append(grid[x][y])
     return nh
+
+
+def moore_neighborhood(row, col, M):
+    mn = []
+    for i in range(M):
+        mn.append((row - (i + 1), col))
+        mn.append((row + (i + 1), col))
+        mn.append((row, col - (i + 1)))
+        mn.append((row, col + (i + 1)))
+        mn.append((row - (i + 1), col - (i + 1)))
+        mn.append((row - (i + 1), col + (i + 1)))
+        mn.append((row + (i + 1), col - (i + 1)))
+        mn.append((row + (i + 1), col + (i + 1)))
+    return mn
 
 
 def countNeighborRocks(grid, row, col, M, rowCount, columnCount):
@@ -89,7 +93,7 @@ def generateRandomRocks(grid, rowDim, colDim, r):
         rI = int(rList[cell] / rowDim)
         cI = int(rList[cell] % colDim)
         grid[rI][cI] = ROCK
-    print_grid(grid)
+    #print_grid(grid)
 
 
 def shuffle(lst):
@@ -101,7 +105,7 @@ def shuffle(lst):
         lst[swap] = tmp
 
 
-print(generateGrid(0.5, 10, 5, 1))
+print(generateGrid(0.5, 2, 5, 1))
 
 
-print_grid(generateGrid(0.5, 1, 5, 1))
+print_grid(generateGrid(0.3, 1, 10, 1))
