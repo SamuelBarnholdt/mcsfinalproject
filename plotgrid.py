@@ -2,7 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from cavegen import generateGrid
 
-H = np.array(generateGrid(0.35, 5, 9, 2))
+# 0.4,4,10,2
+
+H = np.array(generateGrid(0.4, 4, 10, 2))
 H2 = np.array(generateGrid(0.14, 1, 7, 3))
 H3 = np.array(generateGrid(0.14, 1, 7, 3))
 H4 = np.array(generateGrid(0.14, 1, 7, 3))
@@ -10,7 +12,7 @@ H4 = np.array(generateGrid(0.14, 1, 7, 3))
 # H2 = np.array(generateGrid(0.1, 1, 5, 2))
 # 013,1,5,2
 if False:
-    #för att plota flera
+    # för att plota flera
     p1 = plt.subplot(1, 4, 1)
     p2 = plt.subplot(1, 4, 2)
     p3 = plt.subplot(1, 4, 3)

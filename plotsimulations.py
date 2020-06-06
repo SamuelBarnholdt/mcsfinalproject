@@ -11,15 +11,15 @@ def flatten(l):
     return flat
 
 
-N = 100
-nTM = (5, 9, 2)
-r = np.arange(0.35, 0.45, 0.01)
+N = 50
+nTM = (4, 10, 2)
+r = np.arange(0.4, 0.5, 0.01)
 y = simulate_on_r(N, r, nTM)
 
 r = flatten([[x] * N for x in r])
 y = flatten(y)
 
 
-plt.hist2d(r, y, bins=(80, 80), cmap=plt.cm.rainbow)
+plt.hist2d(r, y, bins=(80, 80), cmap=plt.cm.jet)
 plt.colorbar()
 plt.show()
