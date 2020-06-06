@@ -34,21 +34,30 @@ def generateGrid(r, n, T, M):
 
 def makeHills(grid, row, col, M = 1):
     # Worlds hackiest solution:    
-        # Catching div by zero errors since they are bound to happen for this kind of sum.
-    try:
+    # Catching div by zero errors since they are bound to happen for this kind of sum.
+    if(grid[row][col] == FLOOR):
         # Taking 1 over the sum of the neighbors will give open areas a higher prob of having hills,
         # since it will divide by a smaller sum.
-        s = 1/((sum(checkNeighborHood(grid,row,col,M))))
-    except ZeroDivisionError:
-        #print('zero')
-        # If the sum happens to be zero the prob of a hill is high, since it's only floor around.
-        s = 0.75
-    if(grid[row][col] == FLOOR) and (random.random() < s):
-        grid[row][col] = UPHILL1
-    elif(grid[row][col] == UPHILL1) and (random.random() < s):
-        grid[row][col] = UPHILL2
-    elif(grid[row][col] == UPHILL2) and (random.random() < s):
-        grid[row][col] = UPHILL3
+        d = sum(checkNeighborHood(grid,row,col,M))
+        s = 1 / d if d else 0.75
+        if(random.random() < s):
+            grid[row][col] = UPHILL1
+
+    if(grid[row][col] == UPHILL1): 
+        d = checkNeighborHood(grid,row,col,M)
+        if(UPHILL1 in d):
+            d = sum(d) 
+            s = 1 / d
+            if(random.random() < s):
+                grid[row][col] = UPHILL2
+
+    if(grid[row][col] == UPHILL2): 
+        d = checkNeighborHood(grid,row,col,M)
+        if(UPHILL2 in d):
+            d = sum(d) 
+            s = 1 / d
+            if(random.random() < s):
+                grid[row][col] = UPHILL3
 
 # finished
 def rockToWall(grid, rowDim, colDim):
