@@ -1,13 +1,22 @@
 import random
 
+import matplotlib.pyplot as plt
+from matplotlib import colors 
+
+u_prob = 0.2
+
+UPHILL3 = 5
+UPHILL2 = 4
+UPHILL1 = 3
 WALL = 2
 ROCK = 1
 FLOOR = 0
 
 
 def generateGrid(r, n, T, M):
-    rowCount, columnCount = 50, 50
-    grid = [[0 for i in range(50)] for i in range(50)]
+    rowCount, columnCount = 40, 40
+    grid = [[0 for i in range(rowCount)] for i in range(columnCount)]
+    #print(len(grid[0]))
     generateRandomRocks(grid, rowCount, columnCount, r)
 
     while n > 0:
@@ -17,11 +26,38 @@ def generateGrid(r, n, T, M):
                     countNeighborRocks(grid, row, col, M, rowCount, columnCount) > T
                 ):
                     grid[row][col] = ROCK
+                makeHills(grid, row, col, M)
         n -= 1
     #print_grid(grid)
     rockToWall(grid, rowCount, columnCount)
     return grid
 
+def makeHills(grid, row, col, M = 1):
+    # Worlds hackiest solution:    
+    # Catching div by zero errors since they are bound to happen for this kind of sum.
+    if(grid[row][col] == FLOOR):
+        # Taking 1 over the sum of the neighbors will give open areas a higher prob of having hills,
+        # since it will divide by a smaller sum.
+        d = sum(checkNeighborHood(grid,row,col,M))
+        s = 1 / d if d else 0.75
+        if(random.random() < s):
+            grid[row][col] = UPHILL1
+
+    if(grid[row][col] == UPHILL1): 
+        d = checkNeighborHood(grid,row,col,M)
+        if(UPHILL1 in d):
+            d = sum(d) 
+            s = 1 / d
+            if(random.random() < s):
+                grid[row][col] = UPHILL2
+
+    if(grid[row][col] == UPHILL2): 
+        d = checkNeighborHood(grid,row,col,M)
+        if(UPHILL2 in d):
+            d = sum(d) 
+            s = 1 / d
+            if(random.random() < s):
+                grid[row][col] = UPHILL3
 
 # finished
 def rockToWall(grid, rowDim, colDim):
@@ -105,7 +141,10 @@ def shuffle(lst):
         lst[swap] = tmp
 
 
-print(generateGrid(0.5, 2, 5, 1))
-
-
-print_grid(generateGrid(0.3, 1, 10, 1))
+cmap = colors.ListedColormap(['thistle', 'teal', 'black', 'plum', 'violet', 'fuchsia'])
+#cmap = colors.ListedColormap(['white', 'black','black','white','white','white'])
+bounds=[0,1,2,3,4,5,6]
+norm = colors.BoundaryNorm(bounds, cmap.N)
+plt.imshow(generateGrid(0.5, 4, 13, 1), cmap = cmap, norm = norm)
+plt.colorbar()
+plt.show()
