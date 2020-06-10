@@ -1,7 +1,7 @@
 import random
 
 import matplotlib.pyplot as plt
-from matplotlib import colors 
+from matplotlib import colors
 
 u_prob = 0.2
 
@@ -16,9 +16,10 @@ FLOOR = 0
 def generateGrid(r, n, T, M):
     rowCount, columnCount = 40, 40
     grid = [[0 for i in range(rowCount)] for i in range(columnCount)]
-    #print(len(grid[0]))
+    # print(len(grid[0]))
     generateRandomRocks(grid, rowCount, columnCount, r)
 
+    k = n
     while n > 0:
         for row in range(rowCount):
             for col in range(columnCount):
@@ -26,38 +27,46 @@ def generateGrid(r, n, T, M):
                     countNeighborRocks(grid, row, col, M, rowCount, columnCount) > T
                 ):
                     grid[row][col] = ROCK
-                makeHills(grid, row, col, M)
+                # makeHills(grid, row, col, M)
         n -= 1
-    #print_grid(grid)
+    while k > 0:
+        for row in range(rowCount):
+            for col in range(columnCount):
+                makeHills(grid, row, col, M)
+        k -= 1
+
+    # print_grid(grid)
     rockToWall(grid, rowCount, columnCount)
     return grid
 
-def makeHills(grid, row, col, M = 1):
-    # Worlds hackiest solution:    
+
+def makeHills(grid, row, col, M=1):
+    # Worlds hackiest solution:
     # Catching div by zero errors since they are bound to happen for this kind of sum.
-    if(grid[row][col] == FLOOR):
+    if grid[row][col] == FLOOR:
         # Taking 1 over the sum of the neighbors will give open areas a higher prob of having hills,
         # since it will divide by a smaller sum.
-        d = sum(checkNeighborHood(grid,row,col,M))
+        d = sum(checkNeighborHood(grid, row, col, M))
         s = 1 / d if d else 0.75
-        if(random.random() < s):
+        if random.random() < s:
             grid[row][col] = UPHILL1
 
-    if(grid[row][col] == UPHILL1): 
-        d = checkNeighborHood(grid,row,col,M)
-        if(UPHILL1 in d):
-            d = sum(d) 
+    if grid[row][col] == UPHILL1:
+        d = checkNeighborHood(grid, row, col, M)
+        if UPHILL1 in d:
+            d = sum(d)
             s = 1 / d
-            if(random.random() < s):
+            if random.random() < s:
                 grid[row][col] = UPHILL2
 
-    if(grid[row][col] == UPHILL2): 
-        d = checkNeighborHood(grid,row,col,M)
-        if(UPHILL2 in d):
-            d = sum(d) 
+    if grid[row][col] == UPHILL2:
+        d = checkNeighborHood(grid, row, col, M)
+        if UPHILL2 in d:
+            d = sum(d)
             s = 1 / d
-            if(random.random() < s):
+            if random.random() < s:
                 grid[row][col] = UPHILL3
+
 
 # finished
 def rockToWall(grid, rowDim, colDim):
@@ -129,7 +138,6 @@ def generateRandomRocks(grid, rowDim, colDim, r):
         rI = int(rList[cell] / rowDim)
         cI = int(rList[cell] % colDim)
         grid[rI][cI] = ROCK
-    #print_grid(grid)
 
 
 def shuffle(lst):
@@ -139,12 +147,3 @@ def shuffle(lst):
         tmp = lst[i]
         lst[i] = lst[swap]
         lst[swap] = tmp
-
-
-cmap = colors.ListedColormap(['thistle', 'teal', 'black', 'plum', 'violet', 'fuchsia'])
-#cmap = colors.ListedColormap(['white', 'black','black','white','white','white'])
-bounds=[0,1,2,3,4,5,6]
-norm = colors.BoundaryNorm(bounds, cmap.N)
-plt.imshow(generateGrid(0.5, 4, 13, 1), cmap = cmap, norm = norm)
-plt.colorbar()
-plt.show()

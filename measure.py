@@ -1,4 +1,4 @@
-from cavegen import generateGrid, ROCK, WALL, FLOOR, print_grid
+from cavegen import ROCK, WALL
 
 
 def neighborhood(row, col):
@@ -31,7 +31,7 @@ def measure(grid):
             if (x, y) not in visited:
                 areas.append(bfs(grid, x, y, visited))
     areas = list(filter(lambda x: False if x is 0 else True, areas))
-    return max(areas) / 2500
+    return max(areas) / (len(grid) * len(grid[0]))
 
 
 def bfs(grid, row, col, visited):
@@ -43,6 +43,3 @@ def bfs(grid, row, col, visited):
     for (x, y) in adj:
         s += bfs(grid, x, y, visited)
     return s + 1
-
-
-
